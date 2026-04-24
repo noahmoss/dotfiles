@@ -1,0 +1,14 @@
+# Never apply these files
+.DS_Store
+*.swp
+
+# Machine-specific, never managed by chezmoi
+.bashrc.local
+
+# Caches and transient state
+**/.cache
+**/.cpcache
+**/undodir
+
+# Vim plugins — installed via :PlugInstall, not tracked
+dot_vim/plugged

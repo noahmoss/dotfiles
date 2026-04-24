@@ -1,0 +1,12 @@
+# Never commit
+*.local
+.DS_Store
+*.swp
+
+# Caches and transient state
+**/.cache/
+**/.cpcache/
+**/undodir/
+
+# Vim plugins (installed via :PlugInstall, not tracked)
+dot_vim/plugged/

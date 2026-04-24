@@ -1,0 +1,5 @@
+{:lint-as {snitch.core/defn* clojure.core/defn
+           snitch.core/*let clojure.core/let
+           snitch.core/*fn clojure.core/fn
+           snitch.core/defmethod* clojure.core/defmethod}
+ :linters {:unresolved-symbol {:exclude [defn* *let *fn defmethod*]}}}

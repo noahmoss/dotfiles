@@ -1,0 +1,20 @@
+[user]
+  name = Noah Moss
+  email = noahbmoss@gmail.com
+[alias]
+  st = status
+  can = commit --amend --no-edit
+  co = checkout
+  br = branch
+  cp = cherry-pick
+  lg = log --oneline -n 10
+[credential]
+  helper = store
+[pager]
+  branch = false
+[core]
+  excludesfile = ~/.gitignore_global
+[rerere]
+	enabled = true
+[maintenance]
+	repo = /Users/noahmoss/metabase

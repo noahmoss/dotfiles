@@ -1,0 +1,212 @@
+# .bashrc
+# bashrc is for aliases, functions, and shell configuration intended for use in
+# interactive shells.  However, in some circumstances, bash sources bashrc even
+# in non-interactive shells (e.g., when using scp), so it is standard practice
+# to check for interactivity at the top of .bashrc and return immediately if
+# the shell is not interactive.  The following line does that; don't remove it!
+[[ $- != *i* ]] && return
+
+# Keep oodles of command history
+HISTFILESIZE=-1
+HISTSIZE=1000000
+
+# https://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows
+# Avoid duplicates
+export HISTCONTROL=ignoredups:erasedups
+# When the shell exits, append to the history file instead of overwriting it
+shopt -s histappend
+# Save and reload the history after each command finishes
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
+# Set up personal aliases, functions, etc.  See https://fburl.com/bash.
+# ...(put your own stuff here!)...
+export EDITOR=nvim export VISUAL=nvim
+
+# BASH PROMPT
+export PS1="\\t $ "
+
+export BROWSER=open
+
+# aliases
+alias 'c'='clear'
+alias '..'='cd ..'
+
+export LSCOLORS=gxFxCxDxBxegedabagacad
+
+if [[ $OSTYPE == "linux-gnu" ]]; then
+    alias ls='ls -GFha --color=auto'
+    alias ll='ls -la --color=auto'
+    alias la='ls -A --color=auto'
+elif [[ $OSTYPE == "darwin"* ]]; then
+    alias ls='ls -GFha'
+    alias ll='ls -la'
+    alias la='ls -A'
+fi
+
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+alias vim='nvim'
+
+alias ipython='ipython --TerminalInteractiveShell.editing_mode="vi"'
+
+
+f() {
+    local file
+    # Use fzf to select the file
+    file=$(fzf)
+    if [[ -n $file ]]; then
+        # Open the file in Vim
+        vim -n -o "$file"
+        # Replace the command in history
+        history -s "vim -n -o $file"
+    fi
+}
+
+alias g++='g++ -std=c++11'
+
+alias cdm='cd ~/metabase'
+alias cdp='cd ~/projects'
+alias cdd='cd ~/dotfiles'
+
+alias rgc="rg -g '*.clj'"
+alias rgj="rg -g '*.js' -g '*.jsx' -g '*.ts'"
+
+set -o vi
+bind -m vi-command 'Control-l: clear-screen'
+bind -m vi-insert 'Control-l: clear-screen'
+
+# Git stuff
+source ~/git-completion.bash
+function glo {
+  n=${1:-"10"}
+  git log --oneline -n $n
+}
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+export FZF_DEFAULT_COMMAND='rg --files --hidden'
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+alias node="env NODE_NO_READLINE=1 rlwrap node"
+
+function activate() {
+    source env/bin/activate &&
+    tmux set-environment VIRTUAL_ENV $VIRTUAL_ENV
+}
+
+if [ -n "$VIRTUAL_ENV" ]; then
+    source $VIRTUAL_ENV/bin/activate;
+fi
+
+# heroku autocomplete setup
+HEROKU_AC_BASH_SETUP_PATH=/Users/noahmoss/Library/Caches/heroku/autocomplete/bash_setup && test -f $HEROKU_AC_BASH_SETUP_PATH && source $HEROKU_AC_BASH_SETUP_PATH;
+
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
+export JAVA_11_HOME=$(/usr/libexec/java_home -v11)
+export JAVA_HOME=$JAVA_11_HOME
+
+export RIPGREP_CONFIG_PATH=~/.ripgreprc
+
+export PATH=$PATH:~/.vim/plugged/vim-iced/bin
+
+export PATH=$PATH:~/.local/bin
+
+export PATH=$PATH:~/harbormaster
+
+. "$HOME/.cargo/env"
+
+function mb_pg() {
+  export MB_DB_TYPE=postgres
+  export MB_DB_DBNAME=metabase
+  export MB_DB_HOST=localhost
+  export MB_DB_PORT=5432
+  export MB_DB_USER=noahmoss
+}
+
+function mb_mysql() {
+  MB_DB_TYPE=mysql
+  MB_DB_DBNAME=metabase_test
+  MB_DB_HOST=localhost
+  MB_DB_PASS=''
+  MB_DB_PORT=3308
+  MB_DB_USER=root
+  MB_MYSQL_TEST_USER=root
+}
+
+function mb_maria() {
+  export MB_DB_TYPE=mysql
+  export MB_DB_DBNAME=metabase_test
+  export MB_DB_HOST=localhost
+  export MB_DB_PASS=''
+  export MB_DB_PORT=3306
+  export MB_DB_USER=root
+  export MB_MYSQL_TEST_USER=root
+}
+
+# use postgres for MB by default
+mb_pg
+
+# Metabase env vars (non-secret; secrets live in ~/.bashrc.local)
+export MB_CONFIG_FILE_PATH=$HOME/dotfiles/mb_config.yml
+export METASTORE_DEV_SERVER_URL=https://token-check.staging.metabase.com
+
+# java version utilities
+export JAVA_17_HOME=$(/usr/libexec/java_home -v 21)
+export JAVA_17_HOME=$(/usr/libexec/java_home -v 17)
+export JAVA_11_HOME=$(/usr/libexec/java_home -v 11)
+export JAVA_8_HOME="/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home"
+
+alias java21="export JAVA_HOME=$JAVA_21_HOME"
+alias java17="export JAVA_HOME=$JAVA_17_HOME"
+alias java11="export JAVA_HOME=$JAVA_11_HOME"
+alias java8="export JAVA_HOME=$JAVA_8_HOME"
+
+# set default to Java 11
+java21
+
+# metabase deployment (secrets in ~/.bashrc.local)
+export DOCKERHUB_EMAIL=ci-admins+release@metabase.com
+export DOCKERHUB_USERNAME=metabaserelease
+export AWS_DEFAULT_PROFILE=metabase_release
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+# pnpm
+export PNPM_HOME="/Users/noahmoss/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+
+# Created by `pipx` on 2025-08-11 14:48:21
+export PATH="$PATH:/Users/noahmoss/.local/bin"
+
+unset GITHUB_TOKEN
+
+## MAGE (Metabase Automation Genius Engine) alias + autocomplete. [auto-installed]
+export MB_DIR="/Users/noahmoss/metabase"
+# alias:
+mage() {
+    cd $MB_DIR && ./bin/mage "$@"
+}
+# autocomplete:
+_bb_tasks() {
+    COMPREPLY=( $(compgen -W "$(bb tasks |tail -n +3 |cut -f1 -d ' ')" -- ${COMP_WORDS[COMP_CWORD]}) );
+}
+complete -f -F _bb_tasks mage
+## END MAGE [auto-installed]
+
+. "/Users/noahmoss/.deno/env"
+
+eval "$(/Users/noahmoss/.local/bin/mise activate bash)" # added by https://mise.run/bash
+
+# Machine-specific / secret env vars (not tracked in dotfiles)
+[ -f ~/.bashrc.local ] && source ~/.bashrc.local

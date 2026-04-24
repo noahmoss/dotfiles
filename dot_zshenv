@@ -1,0 +1,14 @@
+export EDITOR=nvim
+export VISUAL=nvim
+
+export TERM=xterm-256color
+
+export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+export PATH=$PATH:~/.vim/plugged/vim-iced/bin
+
+export JAVA_11_HOME=$(/usr/libexec/java_home -v11)
+export JAVA_HOME=$JAVA_11_HOME
+
+export RIPGREP_CONFIG_PATH=~/.ripgreprc
+. "$HOME/.cargo/env"

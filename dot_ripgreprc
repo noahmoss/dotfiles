@@ -1,0 +1,11 @@
+--max-columns=120
+--max-columns-preview
+
+--glob=!node_modules/*
+--glob=!locales/*
+--glob=!target/*
+--glob=!tags
+--glob=!target/*
+--glob=!babel_cache/*
+
+--smart-case

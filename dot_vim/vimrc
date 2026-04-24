@@ -1,0 +1,268 @@
+" vimrc
+" Author: Noah Moss
+
+" leader keys
+" let mapleader = "\<Space>"
+" let maplocalleader=","
+
+" turn off line wrapping
+"set nowrap
+
+" indentation
+filetype plugin indent on
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set expandtab
+
+" syntax highlighting and color scheme
+syntax on
+set termguicolors
+
+" transparent background
+hi Normal guibg=NONE ctermbg=NONE
+
+" line numbers
+set number relativenumber " use hybrid of normal and relative line numbers
+nnoremap <leader>n :set invnumber<cr>:set invrelativenumber<cr>
+
+" remap :W to :w in case I type it accidentally
+command W w
+
+" misc ui config
+set showcmd " show command at bottom right
+set showmode " show editing mode in status
+set cursorline " highlight current line
+
+" interaction
+set mouse+=a
+set backspace=2 " non-restricted backspace in insert mode
+
+" persistent undo
+if !isdirectory($HOME."/.vim/undodir")
+    call mkdir($HOME."/.vim/undodir", "p")
+endif
+set undodir=~/.vim/undodir
+set undofile
+
+" set swapfile directory
+set dir=/tmp
+
+" clipboard
+set clipboard=unnamed
+
+" autocomplete
+set wildmenu " cycle through vim commands with <Tab>
+
+" scroll
+set scrolljump=5
+
+" search
+set ignorecase " ignore case while searching...
+set smartcase  " ...unless search term contains a capital letter
+set incsearch  " search as chars are entered
+set hlsearch   " highlight search terms
+
+" buffer behavior
+set hidden "hide buffers instead of closing them
+
+" quickly edit/reload the vimrc file
+nnoremap <silent> <leader>ev :e ~/.vim/vimrc<cr>
+nnoremap <silent> <leader>sv :source ~/.vim/vimrc<cr>:source $MYVIMRC<cr>
+
+let g:netrw_dirhistmax = 0
+
+" open new split panes to bottom and right
+set splitbelow
+set splitright
+
+" command line settings
+set history=200
+cnoremap <C-p> <Up>
+cnoremap <C-n> <Down>
+
+" Cmd-T mapping
+nnoremap <C-t> :GFiles<cr>
+
+nnoremap <leader>c :VCoolor<cr>
+
+" let g:airline_theme='base16'
+
+" Fixes delay between keypresses in <ESC>O
+" see https://github.com/vim/vim/issues/24
+set timeout timeoutlen=5000 ttimeoutlen=100
+
+" various filetype autocommands
+augroup commentstrings
+  autocmd!
+  autocmd FileType c,cpp,java setlocal commentstring=//\ %s
+  autocmd Filetype ocaml      setlocal commentstring=(*\ %s\ *)
+augroup END
+
+" quickly toggle QuickScope
+nmap <leader>q <plug>(QuickScopeToggle)
+xmap <leader>q <plug>(QuickScopeToggle)
+
+" disable quote concealing in JSON files
+let g:indentLine_setConceal = 0
+
+" tex options
+let g:tex_flavor = 'tex'
+
+" Haskell
+let g:haskell_indent_if = 3
+
+" YAML
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+
+"  figure out better clojure indentation
+let g:clojure_align_subforms = 1
+let g:clojure_maxlines = 100
+augroup set_lispwords
+  autocmd!
+  autocmd FileType clojure set lispwords+=do,testing,ns,when-not,when-let,reify
+  autocmd FileType clojure set lispwords+=try,catch,finally,doto,binding,cond->,doseq
+  autocmd FileType clojure set lispwords+=are,u/prog1,cond,condp
+augroup END
+
+autocmd FileType clojure set textwidth=120
+
+" Disable autopairs for lisps and just use vim-sexp
+autocmd Filetype lisp,scheme,clojure,lfe let b:AutoPairs = {}
+
+" Open Metabase PR/issue # in Github
+nnoremap <leader>mg :call MetabaseGithubURL()<cr>
+function! MetabaseGithubURL()
+    let issueNo = expand("<cword>")
+    if issueNo =~ '^\d\+$'
+        let url = "https://github.com/metabase/metabase/issues/" . issueNo
+        silent exec "!open '".url."'"
+    else
+        echo "Error: Current word is not a valid issue number"
+    endif
+endfunction
+
+" Enable rainbow parentheses for Clojure files
+let g:rainbow_active = 1
+
+" Trim whitespace on save
+autocmd BufWritePre * :%s/\s\+$//e
+
+" Auto-install vim-plug if not already installed
+if empty(globpath($HOME . '/.vim/autoload', 'plug.vim'))
+  silent execute '!curl -fLo ' . shellescape($HOME . '/.vim/autoload/plug.vim') . ' --create-dirs ' .
+        \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * call plug#begin('~/.vim/plugged') | PlugInstall --sync | q
+endif
+
+" https://stackoverflow.com/questions/4292733/vim-creating-parent-directories-on-save
+function s:MkNonExDir(file, buf)
+    if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+        let dir=fnamemodify(a:file, ':h')
+        if !isdirectory(dir)
+            call mkdir(dir, 'p')
+        endif
+    endif
+endfunction
+augroup BWCCreateDir
+    autocmd!
+    autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+augroup END
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                     MAPPINGS                                                        "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Go to start/end of line with H and L
+nnoremap H ^
+nnoremap L $
+nnoremap ^ H
+nnoremap $ L
+vnoremap H ^
+vnoremap L $
+vnoremap ^ H
+vnoremap $ L
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                     LANGUAGES                                                       "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+autocmd FileType rust setlocal shiftwidth=4 tabstop=4
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                       PLUGINS                                                       "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Quickly jump to other lines by letter labels
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+
+" Disable Conjure document mapping (K) in favor of the LSP
+let g:conjure#mapping#doc_word = v:false
+
+doautocmd FileType clojure
+
+" plugins (using vim-plug) - install using <leader>1
+nnoremap <silent><leader>1 :source ~/.vim/vimrc \| :PlugInstall<CR>
+call plug#begin('~/.vim/plugged')
+" Core editing/navigation
+Plug 'christoomey/vim-tmux-navigator'                                            " seamlessly navigate between vim/tmux panes
+Plug 'vim-scripts/ReplaceWithRegister'                                           " use gr to replace selection without overwriting black-hole register
+Plug 'windwp/nvim-autopairs'
+Plug 'romainl/vim-cool'                                                          " turn off highlighting when done searching
+Plug 'tpope/vim-commentary'                                                      " add/remove comments
+Plug 'tpope/vim-repeat'                                                          " let '.' repeat full plugin maps
+Plug 'tpope/vim-surround'                                                        " quickly wrap text with parens/quotes/etc
+Plug 'tpope/vim-unimpaired'                                                      " handy mappings (TODO: learn these)
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }                " fuzzy finder
+Plug 'junegunn/fzf.vim'                                                          " fzf vim integration
+Plug 'mbbill/undotree'                                                           " undotree (:UndotreeToggle)
+Plug 'tpope/vim-fugitive'                                                        " git integration
+Plug 'tpope/vim-rhubarb'                                                         " GitHub integration
+Plug 'KabbAmine/vCoolor.vim'                                                     " color picker with ctrl+c (hex) / r (rgb) / v (hsl) / w (rgba)
+Plug 'luochen1990/rainbow'                                                       " rainbow parens
+Plug 'dense-analysis/ale'                                                        " linting
+Plug 'vim-airline/vim-airline'                                                   " status line
+Plug 'vim-airline/vim-airline-themes'                                            " status line themes
+Plug 'unblevable/quick-scope'                                                    " highlight characters for quick left/right navigation
+Plug 'easymotion/vim-easymotion'
+Plug 'neovim/nvim-lspconfig'                                                     " quickstart configs for nvim LSP Plug 'nvim-lua/lsp-status.nvim'
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'hrsh7th/nvim-cmp'                                                          " completion
+Plug 'hrsh7th/cmp-nvim-lsp'                                                      " completion via LSP
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'stevearc/oil.nvim'                                                         " edit the filesystem like a normal buffer
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+" Color schemes
+Plug 'EdenEast/nightfox.nvim'
+
+" Previewing
+Plug 'lervag/vimtex'                                                             " preview latex
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }        " preview markdown
+
+" Clojure stuff
+Plug 'guns/vim-sexp'                                                             " S-exp editing
+Plug 'tpope/vim-sexp-mappings-for-regular-people'                                " better S-exp mappings
+Plug 'eraserhd/parinfer-rust', {'do': 'cargo build --release'}                   "
+Plug 'Olical/conjure'
+
+" Frontend stuff
+Plug 'yuezk/vim-js'                                                              "
+Plug 'maxmellon/vim-jsx-pretty'                                                  "
+
+" Other languages
+Plug 'elixir-editors/vim-elixir'                                                 "
+Plug 'rust-lang/rust.vim'                                                        "
+Plug 'mustache/vim-mustache-handlebars'                                          "
+Plug 'vlime/vlime'
+Plug 'mfussenegger/nvim-jdtls'
+Plug 'Vimjas/vim-python-pep8-indent'
+
+call plug#end()
+
+ "This needs to go after the plugins for unknown reasons
+color terafox
