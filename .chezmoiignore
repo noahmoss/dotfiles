@@ -4,6 +4,7 @@
 
 # Machine-specific, never managed by chezmoi
 .bashrc.local
+mb_config.yml
 
 # Caches and transient state
 **/.cache

@@ -68,7 +68,7 @@ alias g++='g++ -std=c++11'
 
 alias cdm='cd ~/metabase'
 alias cdp='cd ~/projects'
-alias cdd='cd ~/dotfiles'
+alias cdd='chezmoi cd'
 
 alias rgc="rg -g '*.clj'"
 alias rgj="rg -g '*.js' -g '*.jsx' -g '*.ts'"
@@ -151,7 +151,7 @@ function mb_maria() {
 mb_pg
 
 # Metabase env vars (non-secret; secrets live in ~/.bashrc.local)
-export MB_CONFIG_FILE_PATH=$HOME/dotfiles/mb_config.yml
+export MB_CONFIG_FILE_PATH=$HOME/mb_config.yml
 export METASTORE_DEV_SERVER_URL=https://token-check.staging.metabase.com
 
 # java version utilities
