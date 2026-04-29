@@ -4,7 +4,6 @@
 
 # Machine-specific, never managed by chezmoi
 .bashrc.local
-mb_config.yml
 
 # Caches and transient state
 **/.cache
@@ -13,3 +12,6 @@ mb_config.yml
 
 # Vim plugins — installed via :PlugInstall, not tracked
 dot_vim/plugged
+
+# Node modules — installed via npm/package.json, not tracked
+**/node_modules

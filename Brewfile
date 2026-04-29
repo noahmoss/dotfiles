@@ -1,0 +1,38 @@
+# Bootstrap a fresh machine: brew bundle --file=~/Brewfile
+# Casks are silently skipped on Linux brew; safe to keep in one file.
+
+# ---- Shell + prompt ----
+brew "starship"
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
+brew "tmux"
+
+# ---- Editor ----
+brew "neovim"
+
+# ---- Core CLI ----
+brew "ripgrep"
+brew "fzf"
+brew "fd"
+brew "bat"
+brew "git"
+brew "git-delta"
+brew "gh"
+brew "jq"
+brew "tree"
+brew "wget"
+brew "httpie"
+brew "chezmoi"
+brew "mise"
+
+# ---- Languages ----
+brew "go"
+brew "uv"
+brew "pnpm"
+brew "nvm"
+brew "babashka"
+
+# ---- Mac-only ----
+cask "orbstack"
+cask "font-fira-code-nerd-font"
+cask "1password-cli"
