@@ -8,6 +8,7 @@
   br = branch
   cp = cherry-pick
   lg = log --oneline -n 10
+  draw = "-c core.pager=cat -c interactive.diffFilter=cat diff"
 [credential]
   helper = osxkeychain
 [pager]
@@ -17,11 +18,14 @@
   pager = delta
 [interactive]
   diffFilter = delta --color-only
+[include]
+  path = ~/.config/delta/themes.gitconfig
 [delta]
-  line-numbers = false
-  file-decoration-style = none
-  hunk-header-decoration-style = none
-  syntax-theme = ansi
+  features = collared-trogon
+  hunk-header-decoration-style = "#4a9eff" box ul
+  line-numbers-left-style = "#4a9eff"
+  line-numbers-right-style = "#4a9eff"
+  hunk-header-file-style = "bold #e0e0e0"
 [merge]
   conflictstyle = zdiff3
 [rerere]
