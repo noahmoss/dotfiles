@@ -1,0 +1,124 @@
+# Portable config sourced by both bash and zsh.
+
+# ---- Editor & basics ----
+export EDITOR=nvim
+export VISUAL=nvim
+export BROWSER=open
+set -o vi
+
+# ---- ls coloring ----
+export LSCOLORS=gxFxCxDxBxegedabagacad
+if [[ $OSTYPE == linux-gnu* ]]; then
+    alias ls='ls -GFha --color=auto'
+    alias ll='ls -la --color=auto'
+    alias la='ls -A --color=auto'
+elif [[ $OSTYPE == darwin* ]]; then
+    alias ls='ls -GFha'
+    alias ll='ls -la'
+    alias la='ls -A'
+fi
+
+# ---- Aliases ----
+alias c='clear'
+alias ..='cd ..'
+alias vim='nvim'
+alias g++='g++ -std=c++11'
+alias node='env NODE_NO_READLINE=1 rlwrap node'
+alias ipython='ipython --TerminalInteractiveShell.editing_mode="vi"'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias rgc="rg -g '*.clj'"
+alias rgj="rg -g '*.js' -g '*.jsx' -g '*.ts'"
+alias cdp='cd ~/projects'
+alias cdd='chezmoi cd'
+
+# ---- fzf / ripgrep ----
+export FZF_DEFAULT_COMMAND='rg --files --hidden'
+export RIPGREP_CONFIG_PATH=~/.ripgreprc
+
+# ---- Java versions (macOS) ----
+# Functions instead of aliases so java_home isn't called eagerly on every shell start.
+if [[ $OSTYPE == darwin* ]]; then
+    java21() { export JAVA_HOME=$(/usr/libexec/java_home -v 21 2>/dev/null); }
+    java17() { export JAVA_HOME=$(/usr/libexec/java_home -v 17 2>/dev/null); }
+    java11() { export JAVA_HOME=$(/usr/libexec/java_home -v 11 2>/dev/null); }
+    java8()  { export JAVA_HOME="/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home"; }
+    java21
+fi
+
+# ---- Homebrew (Apple Silicon) ----
+if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+    export PATH="/opt/homebrew/opt/libressl/bin:$PATH"
+    export PATH="/opt/homebrew/opt/openssl@3/bin:$PATH"
+fi
+
+# ---- PATH ----
+export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+export PATH="$PATH:$HOME/.local/bin"
+export PATH="$PATH:$HOME/.vim/plugged/vim-iced/bin"
+export PATH="$PATH:$HOME/.maestro/bin"
+
+# ---- Toolchains ----
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+[ -f "$HOME/.deno/env" ]  && . "$HOME/.deno/env"
+
+# nvm: lazy-loaded — sourcing nvm.sh eagerly costs ~200ms.
+# First call to `nvm` (or node/npm/npx if no other node is on PATH) loads it.
+export NVM_DIR="$HOME/.nvm"
+nvm() {
+    unset -f nvm
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+    nvm "$@"
+}
+
+export PNPM_HOME="$HOME/Library/pnpm"
+case ":$PATH:" in
+    *":$PNPM_HOME:"*) ;;
+    *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# ---- Functions ----
+
+# fzf-launch nvim on selected file(s). Tab in fzf to multi-select.
+# Records `nvim <file>` in shell history so it's replayable.
+f() {
+    local file cmd
+    file=$(fzf -m) || return
+    [ -n "$file" ] || return
+    cmd="nvim -O"
+    while IFS= read -r line; do
+        cmd+=" $(printf '%q' "$line")"
+    done <<< "$file"
+    if [ -n "$ZSH_VERSION" ]; then
+        print -s "$cmd"
+    else
+        history -s "$cmd"
+    fi
+    eval "$cmd"
+}
+
+# Last N (default 10) git commits, oneline
+glo() {
+    local n=${1:-10}
+    git --no-pager log --oneline -n "$n"
+}
+
+# Activate Python venv and propagate into tmux
+activate() {
+    source env/bin/activate &&
+        tmux set-environment VIRTUAL_ENV "$VIRTUAL_ENV" 2>/dev/null
+}
+
+[ -n "$VIRTUAL_ENV" ] && source "$VIRTUAL_ENV/bin/activate"
+
+# gh-cli manages its own auth; an inherited GITHUB_TOKEN would override it.
+unset GITHUB_TOKEN
+
+# ---- Local-only overrides (gitignored) ----
+[ -f ~/.shellrc.local ] && source ~/.shellrc.local

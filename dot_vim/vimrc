@@ -130,18 +130,6 @@ autocmd FileType clojure set textwidth=120
 " Disable autopairs for lisps and just use vim-sexp
 autocmd Filetype lisp,scheme,clojure,lfe let b:AutoPairs = {}
 
-" Open Metabase PR/issue # in Github
-nnoremap <leader>mg :call MetabaseGithubURL()<cr>
-function! MetabaseGithubURL()
-    let issueNo = expand("<cword>")
-    if issueNo =~ '^\d\+$'
-        let url = "https://github.com/metabase/metabase/issues/" . issueNo
-        silent exec "!open '".url."'"
-    else
-        echo "Error: Current word is not a valid issue number"
-    endif
-endfunction
-
 " Enable rainbow parentheses for Clojure files
 let g:rainbow_active = 1
 

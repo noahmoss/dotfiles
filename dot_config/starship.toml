@@ -1,0 +1,12 @@
+# Disable language modules as they show up as noise.
+# Keep go/python/nodejs (and others) on by default — useful at Supabase.
+
+[java]
+disabled = true
+
+[bun]
+disabled = true
+
+# OrbStack triggers this; not useful day-to-day.
+[docker_context]
+disabled = true

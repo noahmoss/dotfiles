@@ -16,3 +16,9 @@ set vi-ins-mode-string "\1\e[6 q\2"
 "\C-a.":beginning-of-line
 "\C-e.":end-of-line
 "\C-l":clear-screen
+
+# Suppress readline's `execute:` named-command prompt on `:` in vi-command mode.
+$if mode=vi
+set keymap vi-command
+":": redraw-current-line
+$endif

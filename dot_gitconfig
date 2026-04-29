@@ -16,5 +16,3 @@
   excludesfile = ~/.gitignore_global
 [rerere]
 	enabled = true
-[maintenance]
-	repo = /Users/noahmoss/metabase
