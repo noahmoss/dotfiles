@@ -14,5 +14,15 @@
   branch = false
 [core]
   excludesfile = ~/.gitignore_global
+  pager = delta
+[interactive]
+  diffFilter = delta --color-only
+[delta]
+  line-numbers = false
+  file-decoration-style = none
+  hunk-header-decoration-style = none
+  syntax-theme = ansi
+[merge]
+  conflictstyle = zdiff3
 [rerere]
 	enabled = true

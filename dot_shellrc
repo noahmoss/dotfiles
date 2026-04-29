@@ -47,9 +47,15 @@ if [[ $OSTYPE == darwin* ]]; then
     java21
 fi
 
-# ---- Homebrew (Apple Silicon) ----
-if [ -x /opt/homebrew/bin/brew ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+# ---- Homebrew ----
+# /opt/homebrew = Apple Silicon, /home/linuxbrew/.linuxbrew = Linux, /usr/local = Intel macOS.
+for brew_bin in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew /usr/local/bin/brew; do
+    if [ -x "$brew_bin" ]; then
+        eval "$("$brew_bin" shellenv)"
+        break
+    fi
+done
+if [[ $OSTYPE == darwin* ]] && [ -d /opt/homebrew ]; then
     export PATH="/opt/homebrew/opt/libressl/bin:$PATH"
     export PATH="/opt/homebrew/opt/openssl@3/bin:$PATH"
 fi
