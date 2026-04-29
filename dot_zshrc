@@ -15,7 +15,15 @@ setopt INC_APPEND_HISTORY SHARE_HISTORY
 autoload -Uz compinit && compinit -C
 
 # ---- fzf ----
-command -v fzf >/dev/null && eval "$(fzf --zsh)"
+# fzf >= 0.48 supports `--zsh`; older Debian/Ubuntu ships scripts at /usr/share/doc/fzf/examples/.
+if command -v fzf >/dev/null; then
+    if ! eval "$(fzf --zsh 2>/dev/null)"; then
+        [ -f /usr/share/doc/fzf/examples/key-bindings.zsh ] \
+            && source /usr/share/doc/fzf/examples/key-bindings.zsh
+        [ -f /usr/share/doc/fzf/examples/completion.zsh ] \
+            && source /usr/share/doc/fzf/examples/completion.zsh
+    fi
+fi
 
 # ---- Tool integrations ----
 command -v rbenv >/dev/null && eval "$(rbenv init - --no-rehash zsh)"
