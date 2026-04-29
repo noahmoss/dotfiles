@@ -28,7 +28,7 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
     && source /Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash
 [ -f /usr/share/bash-completion/completions/git ] \
     && source /usr/share/bash-completion/completions/git
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+command -v fzf >/dev/null && eval "$(fzf --bash)"
 
 HEROKU_AC_BASH_SETUP_PATH=/Users/noahmoss/Library/Caches/heroku/autocomplete/bash_setup
 [ -f "$HEROKU_AC_BASH_SETUP_PATH" ] && source "$HEROKU_AC_BASH_SETUP_PATH"

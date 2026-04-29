@@ -1,2 +1,0 @@
-# Sourced for all zsh invocations including non-interactive. Keep minimal.
-export TERM=xterm-256color
