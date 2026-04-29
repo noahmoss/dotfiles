@@ -9,7 +9,7 @@
   cp = cherry-pick
   lg = log --oneline -n 10
 [credential]
-  helper = store
+  helper = osxkeychain
 [pager]
   branch = false
 [core]

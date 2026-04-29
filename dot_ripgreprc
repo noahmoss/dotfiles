@@ -5,7 +5,6 @@
 --glob=!locales/*
 --glob=!target/*
 --glob=!tags
---glob=!target/*
 --glob=!babel_cache/*
 
 --smart-case
