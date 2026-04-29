@@ -1,6 +1,6 @@
 # dotfiles
 
-Personal config managed with [chezmoi](https://www.chezmoi.io/). Bash/zsh, neovim, tmux, git, starship.
+Personal config managed with [chezmoi](https://www.chezmoi.io/). Zsh, neovim, tmux, git, starship.
 
 ## Bootstrap
 
