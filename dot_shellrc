@@ -31,6 +31,7 @@ alias egrep='egrep --color=auto'
 alias rgc="rg -g '*.clj'"
 alias rgj="rg -g '*.js' -g '*.jsx' -g '*.ts'"
 alias cdp='cd ~/projects'
+alias cdl='cd ~/learning'
 alias cdd='chezmoi cd'
 
 # ---- fzf / ripgrep ----

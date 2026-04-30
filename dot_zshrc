@@ -23,13 +23,15 @@ bindkey -M viins '^H' backward-delete-char    # Ctrl-H (alternate Backspace)
 bindkey -M viins '^W' backward-kill-word
 bindkey -M viins '^U' backward-kill-line
 
-# Emacs-style cursor moves in vi-insert. Also accept zsh-autosuggestions:
-# end-of-line / forward-char are in $ZSH_AUTOSUGGEST_ACCEPT_WIDGETS, so ^E
-# accepts the whole gray suggestion and ^F accepts one char.
+# Emacs-style cursor moves in vi-insert.
 bindkey -M viins '^E' end-of-line
 bindkey -M viins '^F' forward-char
 bindkey -M viins '^A' beginning-of-line
 bindkey -M viins '^B' backward-char
+
+# Accept the gray autosuggestion. ^Y matches nvim-cmp's confirm bind so the
+# muscle memory transfers between shell and editor.
+bindkey -M viins '^Y' autosuggest-accept
 
 # ---- History ----
 HISTSIZE=1000000
