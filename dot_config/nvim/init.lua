@@ -34,6 +34,10 @@ vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.inccommand = "split"
 vim.opt.cursorline = true
 
+-- Fuzzy-match cmdline completion (case-insensitive). Lets `:goiferr<Tab>`
+-- find `:GoIfErr`.
+vim.opt.wildoptions:append("fuzzy")
+
 -- Indentation defaults (vim-sleuth will override for existing files)
 vim.opt.expandtab = true
 vim.opt.tabstop = 2

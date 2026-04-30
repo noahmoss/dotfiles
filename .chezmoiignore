@@ -15,5 +15,9 @@ README.md
 # Vim plugins — installed via :PlugInstall, not tracked
 dot_vim/plugged
 
+# Lazy.nvim writes to this on every plugin update; let each machine
+# manage its own. Re-add manually if you want to pin versions.
+dot_config/nvim/lazy-lock.json
+
 # Node modules — installed via npm/package.json, not tracked
 **/node_modules
