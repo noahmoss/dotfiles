@@ -1,6 +1,8 @@
 # Never apply these files
 .DS_Store
 *.swp
+setup.sh
+README.md
 
 # Machine-specific, never managed by chezmoi
 .bashrc.local

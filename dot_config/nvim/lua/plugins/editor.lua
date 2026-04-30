@@ -17,6 +17,13 @@ return {
 				view_options = {
 					show_hidden = true,
 				},
+				-- Free up window-nav chords inside Oil buffers (default Oil binds
+				-- C-h to "open in split" and C-l to "refresh", which shadow our
+				-- global C-h/C-j/C-k/C-l window-movement keymaps).
+				keymaps = {
+					["<C-h>"] = false,
+					["<C-l>"] = false,
+				},
 			})
 		end,
 	},
