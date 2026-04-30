@@ -115,6 +115,38 @@ glo() {
     git --no-pager log --oneline -n "$n"
 }
 
+# Commit and push outstanding changes in the chezmoi source repo, using a
+# message in chezmoi's own format ("Add foo Update bar Remove baz"). Useful
+# when files were edited in the source dir directly, since chezmoi's
+# autoCommit hook only fires from chezmoi commands (add/edit/re-add/...).
+cz-sync() {
+    local repo
+    repo=$(chezmoi source-path) || return 1
+    (
+        cd "$repo" || exit 1
+        local status_lines msg=""
+        status_lines=$(git status --porcelain) || exit 1
+        if [ -z "$status_lines" ]; then
+            echo "cz-sync: nothing to commit"
+            exit 0
+        fi
+        while IFS= read -r line; do
+            local code="${line:0:2}" src="${line:3}" target verb
+            target=$(chezmoi target-path "$repo/$src" 2>/dev/null)
+            target="${target##*/}"
+            [ -z "$target" ] && target="$src"
+            case "$code" in
+                "??"|A?|?A) verb=Add ;;
+                D?|?D)      verb=Remove ;;
+                *)          verb=Update ;;
+            esac
+            msg+="$verb $target "
+        done <<< "$status_lines"
+        msg="${msg% }"
+        git add -A && git commit -m "$msg" && git push
+    )
+}
+
 # Activate Python venv and propagate into tmux
 activate() {
     source env/bin/activate &&
