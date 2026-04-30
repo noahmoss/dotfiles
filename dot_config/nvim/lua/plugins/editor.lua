@@ -6,6 +6,12 @@ return {
 	{
 		"stevearc/oil.nvim",
 		dependencies = { { "echasnovski/mini.icons", opts = {} } },
+		-- `-` opens the parent directory in Oil (the Vinegar-style default).
+		-- `<leader>e` opens Oil in the cwd, useful for "explore from project root".
+		keys = {
+			{ "-", "<cmd>Oil<CR>", desc = "Open parent directory" },
+			{ "<leader>e", function() require("oil").open(vim.fn.getcwd()) end, desc = "[E]xplore (cwd)" },
+		},
 		config = function()
 			require("oil").setup({
 				view_options = {
