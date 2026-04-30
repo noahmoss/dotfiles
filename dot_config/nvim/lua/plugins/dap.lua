@@ -42,6 +42,9 @@ return {
 			vim.keymap.set("n", "<leader>dO", dap.step_out, opts)
 			vim.keymap.set("n", "<leader>dq", dap.terminate, opts)
 			vim.keymap.set("n", "<leader>du", dapui.toggle, opts)
+			vim.keymap.set("n", "<leader>dt", function()
+				require("dap-go").debug_test()
+			end, opts)
 		end,
 	},
 }
