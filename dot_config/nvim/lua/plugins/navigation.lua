@@ -1,20 +1,20 @@
 return {
 	"christoomey/vim-tmux-navigator",
 
-	"unblevable/quick-scope",
-	"easymotion/vim-easymotion",
-
+	-- Replaces vim-easymotion, vim-sneak, and quick-scope with one maintained
+	-- plugin. `s` jumps anywhere visible (treesitter-aware), `f/F/t/T` get
+	-- per-character highlights, and search integrates with the same labels.
 	{
-		"justinmk/vim-sneak",
-		init = function()
-			vim.g["sneak#label"] = 1
-		end,
-		config = function()
-			vim.api.nvim_set_keymap("n", "f", "<Plug>Sneak_f", {})
-			vim.api.nvim_set_keymap("n", "F", "<Plug>Sneak_F", {})
-			vim.api.nvim_set_keymap("n", "t", "<Plug>Sneak_t", {})
-			vim.api.nvim_set_keymap("n", "T", "<Plug>Sneak_T", {})
-		end,
+		"folke/flash.nvim",
+		event = "VeryLazy",
+		opts = {},
+		keys = {
+			{ "s",     mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },
+			{ "S",     mode = { "n", "x", "o" }, function() require("flash").treesitter() end,        desc = "Flash Treesitter" },
+			{ "r",     mode = "o",               function() require("flash").remote() end,            desc = "Remote Flash" },
+			{ "R",     mode = { "o", "x" },      function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+			{ "<C-s>", mode = { "c" },           function() require("flash").toggle() end,            desc = "Toggle Flash Search" },
+		},
 	},
 
 	{

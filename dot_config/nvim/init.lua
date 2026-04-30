@@ -55,6 +55,26 @@ vim.keymap.set("v", "$", "L", { desc = "Remap $ to L (visual mode)" })
 
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
+-- Keep cursor centered after big jumps and search hits.
+vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Half-page down (centered)" })
+vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Half-page up (centered)" })
+vim.keymap.set("n", "n", "nzzzv", { desc = "Next search hit (centered)" })
+vim.keymap.set("n", "N", "Nzzzv", { desc = "Prev search hit (centered)" })
+
+-- Keep cursor in place when joining lines (default jumps to the join point).
+vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines (keep cursor)" })
+
+-- Move highlighted lines up/down (auto-reindented). Visual J was "join", which
+-- is rarely used from a multi-line selection; visual K was a man-page lookup.
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
+
+-- Paste over a selection without clobbering the unnamed register.
+vim.keymap.set("x", "<leader>p", [["_dP]], { desc = "[P]aste over (keep register)" })
+
+-- Delete without yanking — useful before pasting from register.
+vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]], { desc = "[D]elete (no yank)" })
+
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
