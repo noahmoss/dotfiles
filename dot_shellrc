@@ -115,11 +115,16 @@ glo() {
     git --no-pager log --oneline -n "$n"
 }
 
-# Commit and push outstanding changes in the chezmoi source repo, using a
-# message in chezmoi's own format ("Add foo Update bar Remove baz"). Useful
-# when files were edited in the source dir directly, since chezmoi's
-# autoCommit hook only fires from chezmoi commands (add/edit/re-add/...).
-cz-sync() {
+# `cm` is a thin wrapper over `chezmoi`. Adds a custom `cm sync` subcommand that
+# commits and pushes outstanding source-repo changes with a message in chezmoi's
+# own format ("Add foo Update bar Remove baz"). Needed because chezmoi's
+# autoCommit hook only fires from chezmoi commands (add/edit/re-add/...), not
+# from direct edits to files in the source dir.
+cm() {
+    if [ "$1" != "sync" ]; then
+        chezmoi "$@"
+        return
+    fi
     local repo
     repo=$(chezmoi source-path) || return 1
     (
@@ -127,7 +132,7 @@ cz-sync() {
         local status_lines msg=""
         status_lines=$(git status --porcelain) || exit 1
         if [ -z "$status_lines" ]; then
-            echo "cz-sync: nothing to commit"
+            echo "cm sync: nothing to commit"
             exit 0
         fi
         while IFS= read -r line; do
