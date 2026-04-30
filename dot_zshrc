@@ -2,17 +2,59 @@
 
 [ -f ~/.shellrc ] && source ~/.shellrc
 
+# ---- Shell behavior ----
+setopt AUTO_CD                 # bare path (e.g. `Documents`) cds into it
+setopt AUTO_PUSHD              # cd pushes onto dir stack; `cd -<Tab>` to pick a recent dir
+setopt PUSHD_IGNORE_DUPS
+setopt INTERACTIVE_COMMENTS    # allow `# comment` on the command line
+
+# ---- Vi mode ----
+# Default is 40 (400ms) — the wait after ESC before vi-command mode kicks in.
+KEYTIMEOUT=5
+
+# Restore bash-style C-p / C-n history walk in vi-insert mode.
+bindkey -M viins '^P' up-line-or-history
+bindkey -M viins '^N' down-line-or-history
+
+# Zsh's vi-insert mode refuses to delete past the point where insert mode began.
+# Use the non-vi widgets so backspace / C-w / C-u behave like every other shell.
+bindkey -M viins '^?' backward-delete-char    # Backspace
+bindkey -M viins '^H' backward-delete-char    # Ctrl-H (alternate Backspace)
+bindkey -M viins '^W' backward-kill-word
+bindkey -M viins '^U' backward-kill-line
+
 # ---- History ----
 HISTSIZE=1000000
 SAVEHIST=1000000
 HISTFILE=~/.zsh_history
 setopt HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE
+setopt EXTENDED_HISTORY        # write timestamps into HISTFILE
+setopt HIST_VERIFY             # show !! / !$ expansions before running, don't auto-execute
+setopt HIST_EXPIRE_DUPS_FIRST  # when trimming HISTFILE, drop dupes before unique entries
 # Share history across terminals (zsh equivalent of bash's PROMPT_COMMAND trick).
 setopt INC_APPEND_HISTORY SHARE_HISTORY
 
 # ---- Completion ----
 # -C skips the security check on $fpath (~100ms saved); fine for personal machines.
 autoload -Uz compinit && compinit -C
+
+# Interactive menu on Tab: a single Tab cycles to the first match and highlights it;
+# subsequent Tabs / C-n / C-p navigate. Without MENU_COMPLETE the first Tab only
+# inserts the common prefix and the menu cursor doesn't appear until Tab #2.
+zmodload zsh/complist
+zstyle ':completion:*' menu select
+setopt MENU_COMPLETE
+setopt COMPLETE_IN_WORD        # allow completing from cursor mid-word, not only end of word
+setopt ALWAYS_TO_END           # but jump cursor to end of word once a match is inserted
+# Case-insensitive matching: typing `read` matches `README`.
+zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}'
+zstyle ':completion:*' special-dirs true   # complete `.` and `..` as candidates
+# Highlight the matching pid when completing `kill <Tab>`.
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
+bindkey -M menuselect '^N' down-line-or-history
+bindkey -M menuselect '^P' up-line-or-history
+bindkey -M menuselect '^[[Z' reverse-menu-complete   # Shift-Tab cycles backward
+bindkey -M menuselect '^[' undo                      # Esc cancels the menu (undoes the insertion)
 
 # ---- fzf ----
 # fzf >= 0.48 supports `--zsh`; older Debian/Ubuntu ships scripts at /usr/share/doc/fzf/examples/.

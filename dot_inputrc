@@ -6,6 +6,9 @@ set blink-matching-paren on
 set colored-stats on
 
 set editing-mode vi
+# Shorten the wait after ESC so vi-command mode kicks in promptly.
+# Default is 500ms; readline uses this to disambiguate ESC from ESC-prefixed sequences.
+set keyseq-timeout 50
 # TODO: why do the following lines not work
 set show-mode-in-prompt on
 set vi-cmd-mode-string "\1\e[2 q\2"
