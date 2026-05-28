@@ -1,6 +1,11 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
 
+-- Disable netrw so oil.nvim can fully take over directory buffers.
+-- Must run before plugins load.
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- [[ Options ]]
 
 vim.opt.number = true
