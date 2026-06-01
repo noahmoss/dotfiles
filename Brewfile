@@ -9,6 +9,7 @@ brew "tmux"
 
 # ---- Editor ----
 brew "neovim"
+brew "tree-sitter"
 
 # ---- Core CLI ----
 brew "ripgrep"
@@ -27,10 +28,11 @@ brew "mise"
 
 # ---- Languages ----
 brew "go"
+brew "rust"
 brew "uv"
 brew "pnpm"
 brew "nvm"
-brew "babashka"
+brew "borkdude/brew/babashka"
 
 # ---- Mac-only ----
 cask "orbstack"
