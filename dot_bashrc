@@ -35,7 +35,7 @@ HEROKU_AC_BASH_SETUP_PATH=/Users/noahmoss/Library/Caches/heroku/autocomplete/bas
 
 # ---- Tool integrations ----
 command -v rbenv >/dev/null && eval "$(rbenv init - --no-rehash bash)"
-[ -x "$HOME/.local/bin/mise" ] && eval "$($HOME/.local/bin/mise activate bash)"
+command -v mise >/dev/null && eval "$(mise activate bash)"
 [ -f ~/.orbstack/shell/init.bash ] && source ~/.orbstack/shell/init.bash 2>/dev/null
 
 # ---- Local-only overrides (gitignored) ----

@@ -79,7 +79,7 @@ fi
 
 # ---- Tool integrations ----
 command -v rbenv >/dev/null && eval "$(rbenv init - --no-rehash zsh)"
-[ -x "$HOME/.local/bin/mise" ] && eval "$($HOME/.local/bin/mise activate zsh)"
+command -v mise >/dev/null && eval "$(mise activate zsh)"
 [ -f ~/.orbstack/shell/init.zsh ] && source ~/.orbstack/shell/init.zsh 2>/dev/null
 
 # ---- Prompt + plugins ----

@@ -26,13 +26,15 @@ brew "httpie"
 brew "chezmoi"
 brew "mise"
 
-# ---- Languages ----
+# ---- Languages/Tooling ----
 brew "go"
 brew "rust"
 brew "uv"
+brew "node"
 brew "pnpm"
 brew "nvm"
 brew "borkdude/brew/babashka"
+brew "awscli"
 
 # ---- Mac-only ----
 cask "orbstack"
