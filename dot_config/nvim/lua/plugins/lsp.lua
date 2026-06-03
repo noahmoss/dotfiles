@@ -83,6 +83,7 @@ return {
 
 			local servers = {
 				pyright = {},
+				ts_ls = {},
 				clojure_lsp = {},
 				gopls = {
 					settings = {
