@@ -61,6 +61,7 @@ done
 if [[ $OSTYPE == darwin* ]] && [ -d /opt/homebrew ]; then
     export PATH="/opt/homebrew/opt/libressl/bin:$PATH"
     export PATH="/opt/homebrew/opt/openssl@3/bin:$PATH"
+    export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
 fi
 
 # ---- PATH ----

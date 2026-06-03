@@ -11,6 +11,9 @@ brew "tmux"
 brew "neovim"
 brew "tree-sitter"
 
+# ---- Database ----
+brew "postgresql@17" # local server for tinkering + psql/pg_dump client; keg-only, PATH set in shellrc. Start with: brew services start postgresql@17
+
 # ---- Core CLI ----
 brew "ripgrep"
 brew "fzf"
