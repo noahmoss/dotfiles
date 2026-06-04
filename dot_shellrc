@@ -29,11 +29,10 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias rgc="rg -g '*.clj'"
 alias rgj="rg -g '*.js' -g '*.jsx' -g '*.ts'"
-alias cdp='cd ~/projects'
 alias cdl='cd ~/learning'
 alias cdd='chezmoi cd'
-alias cds='cd ~/supabase/supabase'
-alias cdss='cd ~/supabase/salt'
+alias cds='cd ~/supabase'
+alias cdss='cd ~/supabase/supabase'
 alias cdsp='cd ~/supabase/platform'
 
 # ---- fzf / ripgrep ----
