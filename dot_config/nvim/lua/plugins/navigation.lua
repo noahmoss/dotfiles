@@ -37,6 +37,31 @@ return {
 			require("telescope").setup({
 				defaults = {
 					path_display = { "smart" },
+					layout_strategy = "horizontal",
+					layout_config = {
+						horizontal = {
+							-- Give the results column more room so the matched
+							-- line text (filename:line:col: text) isn't truncated
+							-- down to just the filename.
+							width = 0.95,
+							preview_width = 0.55,
+						},
+					},
+					vimgrep_arguments = {
+						"rg",
+						"--color=never",
+						"--no-heading",
+						"--with-filename",
+						"--line-number",
+						"--column",
+						"--smart-case",
+						"--hidden",
+					},
+				},
+				pickers = {
+					find_files = {
+						hidden = true,
+					},
 				},
 				extensions = {
 					["ui-select"] = {

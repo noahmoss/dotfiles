@@ -86,6 +86,27 @@ vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]], { desc = "[D]elete (no yank)"
 
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
+vim.keymap.set("n", "<leader>fp", function()
+  local path = vim.fn.expand("%:p")
+  vim.fn.setreg("+", path)
+  vim.notify("Copied: " .. path)
+end, { desc = "[F]ile [P]ath (copy)" })
+
+vim.keymap.set("n", "gx", function()
+  local word = vim.fn.expand("<cWORD>")
+  local issue = word:match("#(%d+)")
+  if issue then
+    local remote = vim.fn.system("git remote get-url origin 2>/dev/null"):gsub("%.git%s*$", ""):gsub("%s+$", "")
+    local repo = remote:match("github%.com[:/](.+)$")
+    if repo then
+      vim.ui.open("https://github.com/" .. repo .. "/issues/" .. issue)
+      return
+    end
+  end
+  -- fallback: open URL under cursor
+  vim.ui.open(vim.fn.expand("<cfile>"))
+end, { desc = "Open URL or GitHub issue/PR (#123)" })
+
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
