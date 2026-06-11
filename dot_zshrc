@@ -93,3 +93,8 @@ command -v starship >/dev/null && eval "$(starship init zsh)"
 
 # ---- Local-only overrides (gitignored) ----
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
+
+# ---- Supabase aliases ----
+alias sac-local="supa-admin-cli --config $HOME/.config/supabase/admin-cli-local"
+alias sac-stage="supa-admin-cli --config $HOME/.config/supabase/admin-cli-staging"
+alias sac-prod="supa-admin-cli --config $HOME/.config/supabase/admin-cli-prod"
