@@ -83,7 +83,6 @@ return {
 
 			local servers = {
 				pyright = {},
-				ts_ls = {},
 				clojure_lsp = {},
 				gopls = {
 					settings = {
@@ -155,6 +154,13 @@ return {
 				vim.lsp.config(server_name, server_config)
 				vim.lsp.enable(server_name)
 			end
+
+			-- tsgo (typescript-go) is installed via npm (@typescript/native-preview),
+			-- not Mason, so it's kept out of the `servers` table above (which feeds
+			-- mason-tool-installer). cmd/root_dir/filetypes come from nvim-lspconfig's
+			-- bundled lsp/tsgo.lua; we just layer on our completion capabilities.
+			vim.lsp.config("tsgo", { capabilities = capabilities })
+			vim.lsp.enable("tsgo")
 		end,
 	},
 }
