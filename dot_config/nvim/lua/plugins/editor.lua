@@ -60,6 +60,17 @@ return {
 	{
 		"echasnovski/mini.nvim",
 		config = function()
+			require("mini.files").setup({
+				mappings = {
+					close = "q",
+					go_in_plus = "<CR>",
+				},
+			})
+
+			vim.keymap.set("n", "<leader>E", function()
+				require("mini.files").open(vim.api.nvim_buf_get_name(0))
+			end, { desc = "[E]xplore (current file)" })
+
 			require("mini.ai").setup({
 				n_lines = 500,
 				custom_textobjects = {

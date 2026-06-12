@@ -4,7 +4,9 @@
       "Bash(chezmoi apply *)",
       "Bash(zsh -i -c 'echo OK; setopt | grep -E \"autocd|autopushd|completeinword|alwaystoend|extendedhistory|histverify|interactivecomments\"')",
       "Read(//opt/homebrew/bin/**)",
-      "Bash(brew list *)"
+      "Bash(brew list *)",
+      "WebSearch",
+      "WebFetch(domain:github.com)"
     ]
   }
 }
