@@ -6,7 +6,12 @@
       "Read(//opt/homebrew/bin/**)",
       "Bash(brew list *)",
       "WebSearch",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Read(//Users/noahmoss/.local/share/nvim/lazy/nvim-treesitter/**)",
+      "Read(//Users/noahmoss/.local/share/nvim/**)",
+      "Read(//Users/noahmoss/.local/share/nvim/lazy/nvim-treesitter/runtime/queries/elixir/**)",
+      "Read(//Users/noahmoss/.local/share/nvim/lazy/nvim-treesitter/runtime/queries/heex/**)",
+      "Read(//Users/noahmoss/.local/share/nvim/lazy/nvim-treesitter/runtime/queries/html/**)"
     ]
   }
 }
