@@ -116,25 +116,18 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 
 -- [[ Autocommands ]]
 
-local go_augroup = vim.api.nvim_create_augroup("go-spaces", { clear = true })
+-- Go uses tabs (gofmt/goimports enforce this). Override the global
+-- expandtab default so we don't fight the formatter; display tabs 4 wide.
+local go_augroup = vim.api.nvim_create_augroup("go-tabs", { clear = true })
 
 vim.api.nvim_create_autocmd("FileType", {
 	group = go_augroup,
 	pattern = "go",
 	callback = function()
-		vim.opt_local.expandtab = true
+		vim.opt_local.expandtab = false
 		vim.opt_local.tabstop = 4
 		vim.opt_local.shiftwidth = 4
 		vim.opt_local.softtabstop = 4
-		vim.cmd("%retab!")
-	end,
-})
-
-vim.api.nvim_create_autocmd("BufWritePost", {
-	group = go_augroup,
-	pattern = "*.go",
-	callback = function()
-		vim.cmd("%retab!")
 	end,
 })
 
