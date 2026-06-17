@@ -146,6 +146,12 @@ return {
 			require("mason-lspconfig").setup({
 				ensure_installed = {},
 				automatic_installation = false,
+				-- v2 auto-enables every Mason-installed server by default. That
+				-- would attach the Mason `typescript-language-server` (ts_ls)
+				-- alongside our `tsgo`, so both answer textDocument/definition
+				-- and `gd` shows every result twice. Disable it; the loop below
+				-- is the single source of truth for which servers we enable.
+				automatic_enable = false,
 			})
 
 			for server_name, server_config in pairs(servers) do

@@ -114,6 +114,83 @@ vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right win
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 
+-- vim-sexp-style structural insert: jump to the head/tail of the nearest
+-- enclosing bracket pair and enter insert mode. `<I` inserts at the head,
+-- `>I` at the tail. Works in any tree-sitter language (TS, Go, Lua, ...) since
+-- it keys off the bracket characters rather than per-language queries.
+--
+-- When a delimiter sits alone on its own line (a multi-line form), inserting
+-- right next to it is useless, so we instead append at the end of the last
+-- content line (`>I`) or at the start of the first content line (`<I`).
+-- (Pressing `<`/`>` waits out timeoutlen, as they're also indent operators.)
+local sexp_open = { ["("] = true, ["["] = true, ["{"] = true }
+local sexp_close = { [")"] = true, ["]"] = true, ["}"] = true }
+-- Returns the opener's length if `text` is a bracketed form, else nil. Handles
+-- the usual single-char brackets plus the two-char `${` of TS/JS template
+-- substitutions (`${expr}`), whose closer is a plain `}`.
+local function sexp_open_len(text)
+  if not sexp_close[text:sub(-1)] then
+    return nil
+  end
+  if sexp_open[text:sub(1, 1)] then
+    return 1
+  end
+  if text:sub(1, 2) == "${" then
+    return 2
+  end
+  return nil
+end
+local function sexp_insert(at_tail)
+  local ok, node = pcall(vim.treesitter.get_node)
+  if not ok or not node then
+    return
+  end
+  while node do
+    local text = vim.treesitter.get_node_text(node, 0)
+    local open_len = sexp_open_len(text)
+    if open_len then
+      local sr, sc, er, ec = node:range() -- 0-indexed rows/cols; ec exclusive
+      local lines = vim.api.nvim_buf_get_lines(0, sr, er + 1, false)
+      local function line(br) -- buffer row (0-indexed) -> text
+        return lines[br - sr + 1] or ""
+      end
+      if at_tail then
+        -- Is the closing delimiter alone on its line (only whitespace before it)?
+        if line(er):sub(1, ec - 1):match("^%s*$") then
+          local br = er - 1 -- skip blank lines up to the last content line
+          while br > sr and line(br):match("^%s*$") do
+            br = br - 1
+          end
+          vim.api.nvim_win_set_cursor(0, { br + 1, 0 })
+          vim.cmd("startinsert!") -- like `A`: end of the content line
+        else
+          vim.api.nvim_win_set_cursor(0, { er + 1, ec - 1 }) -- before closing delim
+          vim.cmd.startinsert()
+        end
+      else
+        -- Is the opening delimiter alone at the end of its line?
+        if line(sr):sub(sc + open_len + 1):match("^%s*$") then
+          local br = sr + 1 -- first content line below the opener
+          while br < er and line(br):match("^%s*$") do
+            br = br + 1
+          end
+          local indent = #(line(br):match("^%s*") or "")
+          vim.api.nvim_win_set_cursor(0, { br + 1, indent }) -- start of content
+          vim.cmd.startinsert()
+        else
+          vim.api.nvim_win_set_cursor(0, { sr + 1, sc + open_len }) -- just past the opener
+          vim.cmd.startinsert()
+        end
+      end
+      return
+    end
+    node = node:parent()
+  end
+end
+
+vim.keymap.set("n", ">I", function() sexp_insert(true) end, { desc = "Insert at end of enclosing form" })
+vim.keymap.set("n", "<I", function() sexp_insert(false) end, { desc = "Insert at start of enclosing form" })
+
 -- [[ Autocommands ]]
 
 -- Go uses tabs (gofmt/goimports enforce this). Override the global
