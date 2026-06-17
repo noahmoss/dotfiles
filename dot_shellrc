@@ -31,9 +31,14 @@ alias rgc="rg -g '*.clj'"
 alias rgj="rg -g '*.js' -g '*.jsx' -g '*.ts'"
 alias cdl='cd ~/learning'
 alias cdd='chezmoi cd'
+
 alias cds='cd ~/supabase'
 alias cdss='cd ~/supabase/supabase'
 alias cdsp='cd ~/supabase/platform'
+
+alias sac-local="supa-admin-cli --config $HOME/.config/supabase/admin-cli-local"
+alias sac-stage="supa-admin-cli --config $HOME/.config/supabase/admin-cli-staging"
+alias sac-prod="supa-admin-cli --config $HOME/.config/supabase/admin-cli-prod"
 
 # ---- fzf / ripgrep ----
 export FZF_DEFAULT_COMMAND='rg --files --hidden'
