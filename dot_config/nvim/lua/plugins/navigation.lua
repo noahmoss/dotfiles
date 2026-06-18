@@ -1,5 +1,5 @@
 return {
-	"christoomey/vim-tmux-navigator",
+	{ "christoomey/vim-tmux-navigator", init = function() vim.g.tmux_navigator_no_mappings = 1 end },
 
 	-- Replaces vim-easymotion, vim-sneak, and quick-scope with one maintained
 	-- plugin. `s` jumps anywhere visible (treesitter-aware), `f/F/t/T` get
