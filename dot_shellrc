@@ -111,6 +111,7 @@ f() {
     done <<< "$file"
     if [ -n "$ZSH_VERSION" ]; then
         print -s "$cmd"
+        fc -AI
     else
         history -s "$cmd"
     fi
