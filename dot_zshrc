@@ -98,3 +98,12 @@ command -v starship >/dev/null && eval "$(starship init zsh)"
 alias sac-local="supa-admin-cli --config $HOME/.config/supabase/admin-cli-local"
 alias sac-stage="supa-admin-cli --config $HOME/.config/supabase/admin-cli-staging"
 alias sac-prod="supa-admin-cli --config $HOME/.config/supabase/admin-cli-prod"
+
+# fbd - delete git branch (including remote branches)
+# https://www.peterp.me/articles/cli-tips-interactive-branch-delete/ 
+fbd() {
+  local branches branch
+  branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
+  branch=$(echo "$branches" | fzf --multi ) &&
+  git branch -D $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+}
