@@ -10,7 +10,8 @@ return {
 						if not hash or hash:match("^0+$") then
 							return
 						end
-						local remote = vim.fn.system("git remote get-url origin 2>/dev/null"):gsub("\n", "")
+						local git_dir = vim.fn.FugitiveGitDir()
+						local remote = vim.fn.system("git --git-dir=" .. vim.fn.shellescape(git_dir) .. " remote get-url origin 2>/dev/null"):gsub("\n", "")
 						local owner, repo = remote:match("github%.com[:/]([^/]+)/([^/\n%.]+)")
 						if not owner then
 							vim.notify("Could not determine GitHub repo", vim.log.levels.ERROR)
