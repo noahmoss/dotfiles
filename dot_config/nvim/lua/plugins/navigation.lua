@@ -37,6 +37,11 @@ return {
 			require("telescope").setup({
 				defaults = {
 					path_display = { "filename_first" },
+					-- We pass --hidden to rg (in vimgrep_arguments and find_files)
+					-- so dotfiles like .zshrc show up, but that also makes rg
+					-- descend into .git/. Filter the .git directory back out of
+					-- every picker (find_files results and live_grep matches).
+					file_ignore_patterns = { "^%.git/", "/%.git/" },
 					layout_strategy = "horizontal",
 					layout_config = {
 						horizontal = {
