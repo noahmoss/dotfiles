@@ -41,7 +41,7 @@ alias sac-stage="supa-admin-cli --config $HOME/.config/supabase/admin-cli-stagin
 alias sac-prod="supa-admin-cli --config $HOME/.config/supabase/admin-cli-prod"
 
 # ---- fzf / ripgrep ----
-export FZF_DEFAULT_COMMAND='rg --files --hidden'
+export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git/*"'
 export RIPGREP_CONFIG_PATH=~/.ripgreprc
 
 # ---- Java versions (macOS) ----
