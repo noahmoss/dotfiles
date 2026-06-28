@@ -62,6 +62,13 @@ return {
 					find_files = {
 						hidden = true,
 					},
+					-- LSP location pickers shorten long dependency paths (e.g.
+					-- ~/.rustup/...) so the matched line text stays visible
+					-- instead of being truncated away.
+					lsp_type_definitions = { path_display = { shorten = { len = 1, exclude = { -1 } } } },
+					lsp_definitions = { path_display = { shorten = { len = 1, exclude = { -1 } } } },
+					lsp_implementations = { path_display = { shorten = { len = 1, exclude = { -1 } } } },
+					lsp_references = { path_display = { shorten = { len = 1, exclude = { -1 } } } },
 				},
 				extensions = {
 					["ui-select"] = {
