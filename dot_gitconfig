@@ -8,6 +8,7 @@
   br = branch
   cp = cherry-pick
   lg = log --oneline -n 10
+  pf = push --force-with-lease
   draw = "-c core.pager=cat -c interactive.diffFilter=cat diff"
 [credential]
   helper = osxkeychain
