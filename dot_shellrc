@@ -32,6 +32,14 @@ alias rgj="rg -g '*.js' -g '*.jsx' -g '*.ts'"
 alias cdl='cd ~/learning'
 alias cdd='chezmoi cd'
 
+# Quick-open config files, editing the chezmoi source and applying on save.
+alias zshrc='chezmoi edit --apply ~/.zshrc'
+alias shellrc='chezmoi edit --apply ~/.shellrc'
+alias nvimrc='chezmoi edit --apply ~/.config/nvim/init.lua'
+alias vimrc='chezmoi edit --apply ~/.vim/vimrc'
+alias tmuxconf='chezmoi edit --apply ~/.tmux.conf'
+alias gitconfig='chezmoi edit --apply ~/.gitconfig'
+
 alias cds='cd ~/supabase'
 alias cdss='cd ~/supabase/supabase'
 alias cdsp='cd ~/supabase/platform'
