@@ -84,6 +84,34 @@ return {
 			local servers = {
 				pyright = {},
 				clojure_lsp = {},
+				clangd = {
+					-- Flags (not `settings`) are how clangd is configured — it doesn't
+					-- read most options via workspace/didChangeConfiguration.
+					-- --background-index: index the whole project (via compile_commands.json)
+					-- so goto-def/references/hover work across files you haven't opened,
+					-- not just the current TU. This is what makes navigating a large
+					-- codebase like Postgres tractable.
+					-- --header-insertion=iwyu: auto-add #includes when completing symbols
+					-- from headers not yet included.
+					-- --all-scopes-completion: complete symbols from all namespaces/scopes,
+					-- not just ones already visible/included.
+					--
+					-- Note: clangd needs a compile_commands.json (or compile_flags.txt) at
+					-- the project root to resolve include paths/macros correctly. Postgres
+					-- uses autoconf/make, not CMake, so generate one with:
+					--   ./configure && bear -- make -j$(nproc)
+					-- (bear is available via `brew install bear`). Without it, clangd falls
+					-- back to guessed flags and diagnostics/completion will be unreliable.
+					cmd = {
+						"clangd",
+						"--background-index",
+						"--clang-tidy",
+						"--header-insertion=iwyu",
+						"--all-scopes-completion",
+						"--completion-style=detailed",
+						"--pch-storage=memory",
+					},
+				},
 				gopls = {
 					settings = {
 						gopls = {
@@ -140,6 +168,7 @@ return {
 				"gomodifytags",
 				"gotests",
 				"iferr",
+				"clang-format",
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 

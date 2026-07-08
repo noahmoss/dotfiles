@@ -43,6 +43,11 @@ alias gitconfig='chezmoi edit --apply ~/.gitconfig'
 alias cds='cd ~/supabase'
 alias cdss='cd ~/supabase/supabase'
 alias cdsp='cd ~/supabase/platform'
+alias cdam='cd ~/supabase/admin-mgr'
+alias cdaa='cd ~/supabase/supabase-admin-api'
+alias cdspg='cd ~/supabase/postgres'
+
+alias cdpg='cd ~/postgres'
 
 alias sac-local="supa-admin-cli --config $HOME/.config/supabase/admin-cli-local"
 alias sac-stage="supa-admin-cli --config $HOME/.config/supabase/admin-cli-staging"
