@@ -92,6 +92,14 @@ vim.keymap.set("n", "<leader>fp", function()
   vim.notify("Copied: " .. path)
 end, { desc = "[F]ile [P]ath (copy)" })
 
+vim.keymap.set("n", "<leader>fr", function()
+  local path = vim.fn.expand("%:p")
+  local base = vim.fn.expand("~/supabase/")
+  local rel = path:sub(1, #base) == base and path:sub(#base + 1) or path
+  vim.fn.setreg("+", rel)
+  vim.notify("Copied: " .. rel)
+end, { desc = "[F]ile path [R]elative to ~/supabase" })
+
 vim.keymap.set("n", "gx", function()
   local word = vim.fn.expand("<cWORD>")
   local issue = word:match("#(%d+)")
