@@ -39,8 +39,13 @@ return {
 					path_display = { "filename_first" },
 					-- We pass --hidden to rg (in vimgrep_arguments and find_files)
 					-- so dotfiles like .zshrc show up, but that also makes rg
-					-- descend into .git/. Filter the .git directory back out of
-					-- every picker (find_files results and live_grep matches).
+					-- descend into .git/. Exclude it via a glob (below) so rg
+					-- never searches .git/ contents in the first place — cwd
+					-- here spans many repos, so without this every keystroke
+					-- greps through every nested repo's pack files, which is
+					-- what causes live_grep to appear to freeze on no-match
+					-- queries. file_ignore_patterns is kept as a display-level
+					-- backstop for pickers that don't use vimgrep_arguments.
 					file_ignore_patterns = { "^%.git/", "/%.git/" },
 					layout_strategy = "horizontal",
 					layout_config = {
@@ -61,11 +66,13 @@ return {
 						"--column",
 						"--smart-case",
 						"--hidden",
+						"--glob=!**/.git/*",
 					},
 				},
 				pickers = {
 					find_files = {
 						hidden = true,
+						find_command = { "rg", "--files", "--hidden", "--glob=!**/.git/*" },
 					},
 					-- LSP location pickers shorten long dependency paths (e.g.
 					-- ~/.rustup/...) so the matched line text stays visible
