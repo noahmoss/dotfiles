@@ -115,6 +115,11 @@ return {
 				gopls = {
 					settings = {
 						gopls = {
+							-- Analyze build-tagged files (e.g. admin-mgr's
+							-- `//go:build canary`) that are otherwise excluded
+							-- from the default build, so gopls has package
+							-- metadata for them.
+							buildFlags = { "-tags=canary" },
 							staticcheck = true,
 							usePlaceholders = true,
 							completeUnimported = true,
@@ -149,6 +154,7 @@ return {
 				cssls = {},
 				elixirls = {},
 				eslint = {},
+				ts_ls = {},
 				lua_ls = {
 					settings = {
 						Lua = {
@@ -175,11 +181,10 @@ return {
 			require("mason-lspconfig").setup({
 				ensure_installed = {},
 				automatic_installation = false,
-				-- v2 auto-enables every Mason-installed server by default. That
-				-- would attach the Mason `typescript-language-server` (ts_ls)
-				-- alongside our `tsgo`, so both answer textDocument/definition
-				-- and `gd` shows every result twice. Disable it; the loop below
-				-- is the single source of truth for which servers we enable.
+				-- v2 auto-enables every Mason-installed server by default, which
+				-- would double-enable `ts_ls` (already explicit in `servers` above)
+				-- alongside anything else Mason installs. Disable it; the loop
+				-- below is the single source of truth for which servers we enable.
 				automatic_enable = false,
 			})
 
@@ -190,12 +195,12 @@ return {
 				vim.lsp.enable(server_name)
 			end
 
-			-- tsgo (typescript-go) is installed via npm (@typescript/native-preview),
-			-- not Mason, so it's kept out of the `servers` table above (which feeds
-			-- mason-tool-installer). cmd/root_dir/filetypes come from nvim-lspconfig's
-			-- bundled lsp/tsgo.lua; we just layer on our completion capabilities.
-			vim.lsp.config("tsgo", { capabilities = capabilities })
-			vim.lsp.enable("tsgo")
+			-- tsgo (typescript-go, @typescript/native-preview) is disabled for now —
+			-- its code actions don't yet cover refactors (extract function/variable,
+			-- etc.), which `ts_ls` (added to `servers` above) gets from full tsserver.
+			-- To flip back: remove `ts_ls` from `servers` and uncomment below.
+			-- vim.lsp.config("tsgo", { capabilities = capabilities })
+			-- vim.lsp.enable("tsgo")
 		end,
 	},
 }
