@@ -28,6 +28,7 @@ brew "mise"
 
 # ---- Languages ----
 brew "go"
+brew "delve" # dlv, the Go debugger nvim-dap-go shells out to
 brew "uv"
 brew "pnpm"
 brew "nvm"

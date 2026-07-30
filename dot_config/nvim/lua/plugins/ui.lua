@@ -13,7 +13,13 @@ return {
 		event = "VeryLazy",
 		priority = 1000,
 		config = function()
-			require("tiny-inline-diagnostic").setup()
+			require("tiny-inline-diagnostic").setup({
+				options = {
+					-- Hide the inline virtual text while <leader>de's float is open, so
+					-- the two don't visually overlap on the diagnostic's line.
+					override_open_float = true,
+				},
+			})
 		end,
 	},
 

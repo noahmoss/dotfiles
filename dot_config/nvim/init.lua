@@ -86,6 +86,14 @@ vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]], { desc = "[D]elete (no yank)"
 
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
+-- The quickfix/loclist above flattens each diagnostic to one truncated line
+-- (e.g. a long TS union-type error gets cut off mid-type). Pop the full,
+-- wrapped message in a float instead of squinting at the flattened line.
+vim.diagnostic.config({
+  float = { border = "rounded", source = true, max_width = 100 },
+})
+vim.keymap.set("n", "<leader>de", vim.diagnostic.open_float, { desc = "[D]iagnostic in float ([E]rror)" })
+
 vim.keymap.set("n", "<leader>fp", function()
   local path = vim.fn.expand("%:p")
   vim.fn.setreg("+", path)

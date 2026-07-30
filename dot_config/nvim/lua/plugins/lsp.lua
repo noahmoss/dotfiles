@@ -12,6 +12,15 @@ return {
 	{ "Bilal2453/luvit-meta", lazy = true },
 
 	{
+		-- Rewrites the ~67 most confusing tsserver error messages (e.g. the
+		-- TS2345/TS2739 "is missing the following properties" combo) into
+		-- plainer English. Auto-attaches to `ts_ls` diagnostics.
+		"dmmulroy/ts-error-translator.nvim",
+		ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+		opts = {},
+	},
+
+	{
 		"neovim/nvim-lspconfig",
 		dependencies = {
 			{ "williamboman/mason.nvim", opts = {} },
@@ -21,6 +30,134 @@ return {
 			"hrsh7th/cmp-nvim-lsp",
 		},
 		config = function()
+			-- Categorizes references into definition/usage/import/test/vendor,
+			-- sorts real usages first (imports, test-file, and dependency hits
+			-- last), and tags each row with an icon + highlight so the
+			-- categories are visually scannable at a glance instead of a flat,
+			-- undifferentiated list.
+			local has_nerd_font = vim.g.have_nerd_font
+			local CATEGORY = {
+				usage = { rank = 0, icon = has_nerd_font and "" or "[use]", hl = "TelescopeRefUsage" },
+				-- Ranked below usage: seeing where a symbol is actually used
+				-- matters more day-to-day than re-seeing its declaration, which
+				-- you just navigated from (or can jump to separately via gd).
+				definition = { rank = 1, icon = has_nerd_font and "" or "[def]", hl = "TelescopeRefDefinition" },
+				import = { rank = 2, icon = has_nerd_font and "" or "[import]", hl = "TelescopeRefImport" },
+				test = { rank = 3, icon = has_nerd_font and "" or "[test]", hl = "TelescopeRefTest" },
+				vendor = { rank = 4, icon = has_nerd_font and "" or "[vendor]", hl = "TelescopeRefVendor" },
+				-- Unstyled fallback for definitions_picker: a definitions result
+				-- that isn't vendor/test is just real project source, so it gets
+				-- no icon/tag (icon = "" is a signal make_lsp_picker checks for).
+				source = { rank = 0, icon = "", hl = "TelescopeRefUsage" },
+			}
+			-- `default = true` so these fall back to sensible, theme-adapting
+			-- colors but don't clobber an explicit override from a colorscheme.
+			vim.api.nvim_set_hl(0, "TelescopeRefDefinition", { link = "Title", default = true })
+			vim.api.nvim_set_hl(0, "TelescopeRefUsage", { link = "Normal", default = true })
+			vim.api.nvim_set_hl(0, "TelescopeRefImport", { link = "Comment", default = true })
+			vim.api.nvim_set_hl(0, "TelescopeRefTest", { link = "Comment", default = true })
+			vim.api.nvim_set_hl(0, "TelescopeRefVendor", { link = "Comment", default = true })
+
+			-- `textDocument/references` returns the declaration mixed in with
+			-- everywhere else it's used, with nothing to tell them apart. Fire a
+			-- `textDocument/definition` lookup at the same time (not before) so
+			-- the declaration's location comes back to tag it separately without
+			-- adding to the "grr" latency -- definition is a single-symbol lookup,
+			-- so on any server it should resolve no slower than the workspace-wide
+			-- references search it's racing against. If it's still in flight when
+			-- results render, the declaration just displays as a plain usage.
+			local function start_definition_lookup()
+				local definition_keys = {}
+				local bufnr = vim.api.nvim_get_current_buf()
+				local win = vim.api.nvim_get_current_win()
+				for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr, method = "textDocument/definition" })) do
+					local params = vim.lsp.util.make_position_params(win, client.offset_encoding)
+					client:request("textDocument/definition", params, function(_, result)
+						if not result then
+							return
+						end
+						local locations = vim.islist(result) and result or { result }
+						for _, item in ipairs(vim.lsp.util.locations_to_items(locations, client.offset_encoding)) do
+							definition_keys[item.filename .. ":" .. item.lnum] = true
+						end
+					end, bufnr)
+				end
+				return definition_keys
+			end
+
+			-- `default_category` lets callers that have no real "declaration vs
+			-- usage" distinction (e.g. a goto-definition result set, where every
+			-- item already IS a definition) pick what an otherwise-unclassified
+			-- hit should be labeled, instead of always falling back to "usage".
+			local function categorize(item, definition_keys, default_category)
+				if definition_keys[item.filename .. ":" .. item.lnum] then
+					return "definition"
+				end
+				local fname = item.filename or ""
+				if
+					fname:match("node_modules")
+					or fname:match("[/\\]vendor[/\\]")
+					or fname:match("%.d%.ts$")
+					or fname:match("site%-packages")
+				then
+					return "vendor"
+				end
+				if
+					fname:match("%.test%.")
+					or fname:match("_test%.")
+					or fname:match("%.spec%.")
+					or fname:match("[/\\]tests?[/\\]")
+				then
+					return "test"
+				end
+				local text = item.text or ""
+				if
+					text:match("^%s*import%s")
+					or text:match("require%(")
+					or text:match("^%s*from%s+.-%s+import")
+				then
+					return "import"
+				end
+				return default_category or "usage"
+			end
+
+			-- Thin wrapper around the shared util.categorized_picker (sorts by
+			-- category rank, then tags each entry's display line with its
+			-- category's icon/highlight) so real source, vendor/.d.ts, tests,
+			-- etc. are visually distinguishable instead of a flat list of
+			-- indistinguishable, similarly-shortened paths. navigation.lua's
+			-- code grep reuses the same renderer with its own CATEGORY/ranks.
+			local function make_lsp_picker(prompt_title, items, get_category)
+				require("util.categorized_picker").show(prompt_title, items, CATEGORY, get_category)
+			end
+
+			local function references_picker()
+				local definition_keys = start_definition_lookup()
+				vim.lsp.buf.references(nil, {
+					on_list = function(list)
+						make_lsp_picker("LSP References", list.items, function(item)
+							return categorize(item, definition_keys)
+						end)
+					end,
+				})
+			end
+
+			-- Plain `lsp_definitions` shows every overload/declaration Telescope
+			-- gets back with no way to tell which hit is real project source vs.
+			-- a vendored `.d.ts`/node_modules declaration (common with TS overload
+			-- signatures, which often resolve to 2+ near-identical locations).
+			-- Reuse the same categorize/tagging as references_picker so vendor
+			-- hits are dimmed, tagged, and sorted after real source.
+			local function definitions_picker()
+				vim.lsp.buf.definition({
+					on_list = function(list)
+						make_lsp_picker("LSP Definitions", list.items, function(item)
+							return categorize(item, {}, "source")
+						end)
+					end,
+				})
+			end
+
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
 				callback = function(event)
@@ -30,9 +167,11 @@ return {
 					end
 
 					map("K", vim.lsp.buf.hover, "Show documentation in hover window")
-					map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-					-- Override the Neovim 0.11+ default grr (quickfix list) with Telescope.
-					map("grr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+					map("gd", definitions_picker, "[G]oto [D]efinition")
+					-- Override the Neovim 0.11+ default grr (quickfix list) with our
+					-- categorized picker (real usages first, imports/tests tagged
+					-- and sorted last) instead of Telescope's plain lsp_references.
+					map("grr", references_picker, "[G]oto [R]eferences")
 					map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
 					map("<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
 					map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")

@@ -99,6 +99,21 @@ alias sac-local="supa-admin-cli --config $HOME/.config/supabase/admin-cli-local"
 alias sac-stage="supa-admin-cli --config $HOME/.config/supabase/admin-cli-staging"
 alias sac-prod="supa-admin-cli --config $HOME/.config/supabase/admin-cli-prod"
 
+# ---- EC2 Instance Connect SSH wrapper ----
+# `aws ec2-instance-connect ssh ...` is the one-click command copied from admin studio
+# (with inline AWS_* creds). Route it through an expect script that auto-accepts the
+# host-key prompt (these boxes get a fresh ephemeral IPv6 per connection, so the prompt
+# fires almost every time) and runs `sudo -i` + `set -o vi` on connect. Everything else
+# falls through to the real aws CLI.
+aws() {
+  if [ "$1" = "ec2-instance-connect" ] && [ "$2" = "ssh" ]; then
+    shift 2
+    expect ~/.local/bin/aws-eic-ssh.exp "$@"
+  else
+    command aws "$@"
+  fi
+}
+
 # fbd - delete git branch (including remote branches)
 # https://www.peterp.me/articles/cli-tips-interactive-branch-delete/ 
 fbd() {
