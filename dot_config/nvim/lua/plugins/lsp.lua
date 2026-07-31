@@ -264,7 +264,12 @@ return {
 							completeUnimported = true,
 							analyses = {
 								unusedparams = true,
-								shadow = true,
+								-- shadow is off (and off by default in gopls and
+								-- golangci-lint): it flags the idiomatic
+								-- `if err := f(); err != nil` whenever an outer
+								-- `err` exists, and the fix it nudges you toward
+								-- widens the error's lifetime.
+								shadow = false,
 								nilness = true,
 								unusedwrite = true,
 								useany = true,
