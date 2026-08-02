@@ -9,6 +9,7 @@ brew "tmux"
 
 # ---- Editor ----
 brew "neovim"
+brew "luarocks" # Mason uses it to install fennel-ls (Fennel LSP)
 
 # ---- Core CLI ----
 brew "ripgrep"

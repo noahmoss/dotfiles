@@ -16,6 +16,7 @@ return {
 				"diff",
 				"eex",
 				"elixir",
+				"fennel",
 				"go",
 				"gomod",
 				"gosum",

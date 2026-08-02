@@ -37,4 +37,12 @@ return {
 	},
 
 	{ "eraserhd/parinfer-rust", build = "cargo build --release" },
+
+	-- Compiles Fennel (.fnl) to Lua on write. Activates per-project only when
+	-- it finds a `.nfnl.fnl` config file at the project root, so loading it for
+	-- every Fennel buffer is safe and a no-op elsewhere.
+	{
+		"Olical/nfnl",
+		ft = "fennel",
+	},
 }

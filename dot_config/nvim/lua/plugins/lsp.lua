@@ -296,6 +296,10 @@ return {
 					},
 				},
 				cssls = {},
+				-- fennel-ls (xerool) over fennel-language-server (rydesun): the
+				-- former is actively maintained and configured per-project via a
+				-- `flsproject.fnl` file. Neovim detects `*.fnl` as `fennel` natively.
+				fennel_ls = {},
 				elixirls = {},
 				eslint = {},
 				ts_ls = {},
