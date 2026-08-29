@@ -286,15 +286,8 @@ return {
 						},
 					},
 				},
-				rust_analyzer = {
-					settings = {
-						["rust-analyzer"] = {
-							check = {
-								command = "clippy",
-							},
-						},
-					},
-				},
+				-- rust_analyzer is deliberately absent: rustaceanvim (plugins/
+				-- rust.lua) owns it — an lspconfig entry here would double-attach.
 				cssls = {},
 				-- fennel-ls (xerool) over fennel-language-server (rydesun): the
 				-- former is actively maintained and configured per-project via a
@@ -316,6 +309,9 @@ return {
 
 			local ensure_installed = vim.tbl_keys(servers or {})
 			vim.list_extend(ensure_installed, {
+				-- rust-analyzer no longer comes via the servers table (see note
+				-- there); rustaceanvim finds the mason binary on nvim's PATH.
+				"rust-analyzer",
 				"stylua",
 				"goimports",
 				"impl",

@@ -122,3 +122,6 @@ fbd() {
   branch=$(echo "$branches" | fzf --multi ) &&
   git branch -D $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
 }
+
+# Add postgres to the $PATH to resolve psql
+export PATH="/opt/homebrew/opt/postgresql@18/bin:$PATH"
