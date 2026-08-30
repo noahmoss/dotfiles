@@ -48,7 +48,14 @@ return {
 					if not pcall(vim.treesitter.start, args.buf) then
 						return
 					end
-					vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+					-- Fennel: the grammar's indent queries apply call-style
+					-- alignment to every form, which mangles let-binding
+					-- vectors (continuations align under the second element).
+					-- Skip the override there so the builtin, lisp-aware
+					-- $VIMRUNTIME/indent/fennel.vim keeps the buffer.
+					if vim.bo[args.buf].filetype ~= "fennel" then
+						vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+					end
 				end,
 			})
 		end,
