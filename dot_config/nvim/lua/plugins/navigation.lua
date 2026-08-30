@@ -67,6 +67,10 @@ return {
 						"--smart-case",
 						"--hidden",
 						"--glob=!**/.git/*",
+						-- Lockfiles (Cargo.lock etc.) are committed so rg won't
+						-- skip them, and they flood grep results (every Cargo.lock
+						-- dependency has a `source = "registry+..."` line).
+						"--glob=!**/*.lock",
 					},
 				},
 				pickers = {

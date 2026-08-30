@@ -11,6 +11,11 @@ vim.g.rustaceanvim = {
 				check = {
 					command = "clippy",
 				},
+				-- Format via nightly rustfmt so unstable rustfmt.toml
+				-- options (import grouping/merging) take effect.
+				rustfmt = {
+					extraArgs = { "+nightly" },
+				},
 			},
 		},
 	},
