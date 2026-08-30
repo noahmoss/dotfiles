@@ -318,7 +318,9 @@ return {
 				"gomodifytags",
 				"gotests",
 				"iferr",
-				"clang-format",
+				-- clang-format comes from homebrew: mason's pypi install needs a
+				-- working python venv, and homebrew's python3.14 bottle can't
+				-- create one on this macOS (libexpat symbol mismatch).
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 

@@ -24,7 +24,7 @@ vim.g.rustaceanvim = {
 return {
 	{
 		"mrcjkb/rustaceanvim",
-		version = "^6",
+		version = "^9",
 		-- The plugin lazy-loads itself by filetype; upstream says don't
 		-- additionally lazy it via lazy.nvim.
 		lazy = false,
