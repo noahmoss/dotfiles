@@ -13,7 +13,6 @@ return {
 				"lua",
 				"lisp",
 				"python",
-				"sql",
 			}
 		end,
 	},
