@@ -20,14 +20,18 @@ return {
 
 	"luochen1990/rainbow",
 
+	-- Not loaded for fennel: its legacy-syntax form detection misbehaves there
+	-- (e.g. `vaf` selecting a bare symbol), and its buffer-local `<I`/`>I`
+	-- shadowed the treesitter-based versions in init.lua, which handle fennel
+	-- correctly. Balancing in fennel is parinfer's job anyway.
 	{
 		"guns/vim-sexp",
-		ft = { "clojure", "scheme", "lisp", "fennel" },
+		ft = { "clojure", "scheme", "lisp" },
 	},
 
 	{
 		"tpope/vim-sexp-mappings-for-regular-people",
-		ft = { "clojure", "scheme", "lisp", "fennel" },
+		ft = { "clojure", "scheme", "lisp" },
 		dependencies = { "guns/vim-sexp" },
 		config = function()
 			vim.schedule(function()
