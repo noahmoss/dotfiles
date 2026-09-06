@@ -18,7 +18,11 @@ return {
 			vim.api.nvim_create_autocmd("BufWritePost", {
 				pattern = howdah_dir .. "/fnl/howdah/*.fnl",
 				callback = function()
-					package.loaded.howdah = nil
+					for name in pairs(package.loaded) do
+						if name == "howdah" or vim.startswith(name, "howdah.") then
+							package.loaded[name] = nil
+						end
+					end
 				end,
 			})
 		end,

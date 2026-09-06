@@ -15,22 +15,13 @@ return {
 		},
 		opts = {
 			notify_on_error = false,
-			format_on_save = {
-				timeout_ms = 500,
-				lsp_format = "fallback",
-			},
-			-- fnlfmt is a luarocks --local install, not on PATH. Run it in
-			-- --fix (file) mode: stdin mode appends a second trailing
-			-- newline, growing a blank line at EOF on every save.
-			formatters = {
-				fnlfmt = {
-					command = vim.fn.expand("~/.luarocks/bin/fnlfmt"),
-					args = { "--fix", "$FILENAME" },
-					stdin = false,
-				},
-			},
+			format_on_save = function(bufnr)
+				if vim.bo[bufnr].filetype == "fennel" then
+					return
+				end
+				return { timeout_ms = 500, lsp_format = "fallback" }
+			end,
 			formatters_by_ft = {
-				fennel = { "fnlfmt" },
 				lua = { "stylua" },
 				python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
 				javascript = { "oxfmt", "prettierd", "prettier", stop_after_first = true },
