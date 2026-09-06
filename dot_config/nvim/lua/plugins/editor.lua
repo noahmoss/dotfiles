@@ -81,6 +81,13 @@ return {
 
 			require("mini.test").setup()
 
+			vim.keymap.set("n", "<localleader>tn", function()
+				-- Save first so nfnl recompiles; mini.test sources the .lua from disk.
+				vim.cmd("update")
+				local file = vim.api.nvim_buf_get_name(0):gsub("%.fnl$", ".lua")
+				require("mini.test").run_file(file)
+			end, { desc = "[t]est: run curre[n]t file" })
+
 			local statusline = require("mini.statusline")
 			statusline.setup({ use_icons = vim.g.have_nerd_font })
 

@@ -40,7 +40,13 @@ function M.show(prompt_title, items, category_defs, get_category)
 	-- single result instead of opening a picker with one entry in it.
 	if #items == 1 then
 		local item = items[1]
-		vim.cmd.edit(vim.fn.fnameescape(item.filename))
+		-- `:edit` on the current file means "reload", which fails with E37 when
+		-- the buffer is modified. Skip it for in-file jumps, and record a
+		-- jumplist entry ourselves since only a real `:edit` would add one.
+		if vim.fn.fnamemodify(item.filename, ":p") ~= vim.api.nvim_buf_get_name(0) then
+			vim.cmd.edit(vim.fn.fnameescape(item.filename))
+		end
+		vim.cmd("normal! m'")
 		vim.api.nvim_win_set_cursor(0, { item.lnum, math.max((item.col or 1) - 1, 0) })
 		vim.cmd("normal! zz")
 		return
