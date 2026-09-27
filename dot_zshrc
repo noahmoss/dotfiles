@@ -125,3 +125,6 @@ fbd() {
 
 # Add postgres to the $PATH to resolve psql
 export PATH="/opt/homebrew/opt/postgresql@18/bin:$PATH"
+
+# bob-managed neovim, ahead of homebrew's
+export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
