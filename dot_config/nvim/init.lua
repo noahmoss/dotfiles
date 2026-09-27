@@ -62,7 +62,13 @@ vim.keymap.set("v", "L", "$", { desc = "Go to end of line (visual mode)" })
 vim.keymap.set("v", "^", "H", { desc = "Remap ^ to H (visual mode)" })
 vim.keymap.set("v", "$", "L", { desc = "Remap $ to L (visual mode)" })
 
-vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+-- Also clears multicursors, since their default clear key (CTRL-L) is taken by
+-- split navigation.
+vim.keymap.set("n", "<Esc>", function()
+	vim.cmd.nohlsearch()
+	local mc_ns = vim.api.nvim_create_namespace("nvim.multicursor")
+	vim.api.nvim_buf_clear_namespace(0, mc_ns, 0, -1)
+end, { desc = "Clear search highlight and multicursors" })
 
 -- Keep cursor centered after big jumps and search hits.
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Half-page down (centered)" })
